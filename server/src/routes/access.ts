@@ -1831,7 +1831,7 @@ export function accessRoutes(
     if (req.actor.type === "agent") {
       if (!req.actor.agentId) throw forbidden("Agent authentication required");
       const actorAgent = await agents.getById(req.actor.agentId);
-      if (!actorAgent || actorAgent.companyId !== companyId) {
+      if (!actorAgent || (actorAgent.companyId !== companyId && actorAgent.role !== "ceo")) {
         throw forbidden("Agent key cannot access another company");
       }
       if (actorAgent.role !== "ceo") {

@@ -65,7 +65,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
     if (!req.actor.agentId) throw forbidden("Agent authentication required");
 
     const actorAgent = await agents.getById(req.actor.agentId);
-    if (!actorAgent || actorAgent.companyId !== companyId) {
+    if (!actorAgent || (actorAgent.companyId !== companyId && actorAgent.role !== "ceo")) {
       throw forbidden("Agent key cannot access another company");
     }
     if (actorAgent.role !== "ceo") {
@@ -79,7 +79,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
     if (!req.actor.agentId) throw forbidden("Agent authentication required");
 
     const actorAgent = await agents.getById(req.actor.agentId);
-    if (!actorAgent || actorAgent.companyId !== companyId) {
+    if (!actorAgent || (actorAgent.companyId !== companyId && actorAgent.role !== "ceo")) {
       throw forbidden("Agent key cannot access another company");
     }
     if (actorAgent.role !== "ceo") {
@@ -314,7 +314,7 @@ export function companyRoutes(db: Db, storage?: StorageService) {
       if (!actorAgent || actorAgent.role !== "ceo") {
         throw forbidden("Only CEO agents or board users may update company settings");
       }
-      if (actorAgent.companyId !== companyId) {
+      if (actorAgent.companyId !== companyId && actorAgent.role !== "ceo") {
         throw forbidden("Agent key cannot access another company");
       }
       body = updateCompanyBrandingSchema.parse(req.body);
