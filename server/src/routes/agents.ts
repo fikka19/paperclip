@@ -225,7 +225,7 @@ export function agentRoutes(db: Db) {
     }
     if (!req.actor.agentId) throw forbidden("Agent authentication required");
     const actorAgent = await svc.getById(req.actor.agentId);
-    if (!actorAgent || actorAgent.companyId !== companyId) {
+    if (!actorAgent || (actorAgent.companyId !== companyId && actorAgent.role !== "ceo")) {
       throw forbidden("Agent key cannot access another company");
     }
     const allowedByGrant = await access.hasPermission(companyId, "agent", actorAgent.id, "agents:create");
@@ -270,7 +270,7 @@ export function agentRoutes(db: Db) {
     }
     if (!req.actor.agentId) return false;
     const actorAgent = await svc.getById(req.actor.agentId);
-    if (!actorAgent || actorAgent.companyId !== companyId) return false;
+    if (!actorAgent || (actorAgent.companyId !== companyId && actorAgent.role !== "ceo")) return false;
     const allowedByGrant = await access.hasPermission(companyId, "agent", actorAgent.id, "agents:create");
     return allowedByGrant || canCreateAgents(actorAgent);
   }
@@ -351,7 +351,7 @@ export function agentRoutes(db: Db) {
     if (!req.actor.agentId) throw forbidden("Agent authentication required");
 
     const actorAgent = await svc.getById(req.actor.agentId);
-    if (!actorAgent || actorAgent.companyId !== targetAgent.companyId) {
+    if (!actorAgent || (actorAgent.companyId !== targetAgent.companyId && actorAgent.role !== "ceo")) {
       throw forbidden("Agent key cannot access another company");
     }
 
@@ -376,7 +376,7 @@ export function agentRoutes(db: Db) {
     if (!req.actor.agentId) throw forbidden("Agent authentication required");
 
     const actorAgent = await svc.getById(req.actor.agentId);
-    if (!actorAgent || actorAgent.companyId !== targetAgent.companyId) {
+    if (!actorAgent || (actorAgent.companyId !== targetAgent.companyId && actorAgent.role !== "ceo")) {
       throw forbidden("Agent key cannot access another company");
     }
   }
@@ -1632,7 +1632,7 @@ export function agentRoutes(db: Db) {
 
     if (req.actor.type === "agent") {
       const actorAgent = req.actor.agentId ? await svc.getById(req.actor.agentId) : null;
-      if (!actorAgent || actorAgent.companyId !== existing.companyId) {
+      if (!actorAgent || (actorAgent.companyId !== existing.companyId && actorAgent.role !== "ceo")) {
         res.status(403).json({ error: "Forbidden" });
         return;
       }

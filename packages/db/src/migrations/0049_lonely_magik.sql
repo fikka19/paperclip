@@ -1,0 +1,1 @@
+ALTER TABLE "plugin_state" ALTER COLUMN "value_json" DROP NOT NULL;

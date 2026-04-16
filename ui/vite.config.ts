@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     port: 5173,
+    allowedHosts: ["dashboard.arcom.services", "app.arcom.services", "router.arcom.services"],
     watch: createUiDevWatchOptions(process.cwd()),
     proxy: {
       "/api": {
